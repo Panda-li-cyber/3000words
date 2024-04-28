@@ -15,12 +15,26 @@
         <table>
             <tbody>
                 <script>
+                    const validCodes = ["XMAYKE47M3", "QN8TOFSF1M", "6JOIQ9OTHZ", "BNM1YCKO7V", "TC99TSAMM7"];  // 示例，实际使用时请替换为完整的注册码列表
+                    function checkCodeAndOpenLevel(level) {
+                        if (level > 100) {
+                            const userCode = prompt("请输入注册码，如需帮助请联系李先生（微信同号：13787746436）:");
+                            if (validCodes.includes(userCode)) {
+                                window.location.href = '三千 (' + level + ').html';
+                            } else {
+                                alert("注册码不正确，请重新输入或联系作者获取。");
+                            }
+                        } else {
+                            window.location.href = '三千 (' + level + ').html';
+                        }
+                    }
+
                     let level = 1;
-                    for(var i = 0; i < 50; i++) {
+                    for (var i = 0; i < 50; i++) {
                         document.write('<tr>');
-                        for(var j = 0; j < 5; j++, level++) {
+                        for (var j = 0; j < 5; j++, level++) {
                             if (level <= 247) {
-                                let link = level <= 100 ? '<a href="三千 (' + level + ').html">第' + level + '关</a>' : '请输入注册码';
+                                let link = level <= 100 ? '<a href="三千 (' + level + ').html">第' + level + '关</a>' : '<a href="#" onclick="checkCodeAndOpenLevel(' + level + ')">第' + level + '关</a>';
                                 document.write('<td>' + link + '</td>');
                             } else {
                                 document.write('<td>&nbsp;</td>');
