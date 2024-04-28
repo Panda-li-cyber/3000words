@@ -15,14 +15,14 @@
         <table>
             <tbody>
                 <script>
-                    for(var i=0; i<50; i++) {
+                    let level = 1;
+                    for(var i = 0; i < 50; i++) {
                         document.write('<tr>');
-                        for(var j=0; j<5; j++) {
-                            var level = i + j*50 + 1;
-                            if(level <= 247) {
-                                document.write('<td><a href="3000-' + level + '.html">第' + level + '关</a></td>');
+                        for(var j = 0; j < 5; j++, level++) {
+                            if (level <= 247) {
+                                document.write('<td><a href="三千 (' + level + ').html">第' + level + '关</a></td>');
                             } else {
-                                document.write('<td>&nbsp;</td>'); 
+                                document.write('<td>&nbsp;</td>');
                             }
                         }
                         document.write('</tr>');
