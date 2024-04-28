@@ -20,7 +20,8 @@
                         document.write('<tr>');
                         for(var j = 0; j < 5; j++, level++) {
                             if (level <= 247) {
-                                document.write('<td><a href="三千 (' + level + ').html">第' + level + '关</a></td>');
+                                let link = level <= 100 ? '<a href="三千 (' + level + ').html">第' + level + '关</a>' : '请输入注册码';
+                                document.write('<td>' + link + '</td>');
                             } else {
                                 document.write('<td>&nbsp;</td>');
                             }
