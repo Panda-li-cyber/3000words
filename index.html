@@ -1,61 +1,52 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html>
 <head>
-    <meta charset="UTF-8">
     <title>高考英语新课标3000词汇连连看</title>
     <style>
         body { text-align: center; font-family: Arial, sans-serif; }
-        h1 { margin-bottom: 20px; }
-        .form-container { margin: 20px; }
-        table { margin-top: 20px; margin-left: auto; margin-right: auto; }
-        td { padding: 10px; border: 1px solid black; }
+        h1 { margin-bottom: 40px; }
+        td { padding: 5px; border: 1px solid #000; }
+        table { margin: 0 auto; border-collapse: collapse; }
+        footer { position: fixed; left: 0; bottom: 0; width: 100%; background-color: #f8f9fa; text-align: center; }
     </style>
 </head>
 <body>
     <h1>高考英语新课标3000词汇连连看</h1>
-
-    <div class="form-container">
-        <input type="text" id="username" placeholder="请输入您的姓名">
-        <button onclick="saveName()">提交姓名</button>
-    </div>
+    <table>
+        <tbody>
+            <script>
+                let level = 1;
+                for(var i = 0; i < 50; i++) {
+                    document.write('<tr>');
+                    for(var j = 0; j < 5; j++, level++) {
+                        if (level <= 247) {
+                            let link = level <= 100 ? '<a href="三千 (' + level + ').html">第' + level + '关</a>' : '<a href="#" onclick="showRegistrationPrompt()">请输入注册码</a>';
+                            document.write('<td>' + link + '</td>');
+                        } else {
+                            document.write('<td>&nbsp;</td>');
+                        }
+                    }
+                    document.write('</tr>');
+                }
+            </script>
+        </tbody>
+    </table>
+    <footer>临武一中李国保|熊猫李English工作室</footer>
 
     <script>
-        function saveName() {
-            const username = document.getElementById('username').value;
-            localStorage.setItem('username', username);
-            alert('姓名已保存！');
-        }
-
-        function checkRegCodeAndAccess(level) {
-            if (level <= 100) {
-                openLevel(level);
-            } else if (level >= 101 && level <= 247) {
-                if (localStorage.getItem('regCode')) {
-                    openLevel(level);
-                } else {
-                    let regCode = prompt("请输入注册码，如需注册码，请联系作者：李13787746436（微信同号）");
-                    if (regCode === "正确的注册码") { // 这里应替换为实际的注册码
-                        localStorage.setItem('regCode', regCode);
-                        openLevel(level);
-                    } else {
-                        alert("注册码错误，请重新输入或联系作者获取。");
-                    }
+        function showRegistrationPrompt() {
+            var registrationCode = prompt("请输入作者提供的注册码:");
+            // 这里模拟验证注册码，实际情况需要连接到服务器验证
+            if (registrationCode === "your_registration_code") {
+                alert("注册码验证通过，后续关卡已解锁！");
+                // 修改后续关卡链接为可访问状态
+                for(var i = 50; i <= 247; i++) {
+                    document.querySelector("table").rows[Math.floor(i / 5)].cells[i % 5].innerHTML = '<a href="三千 (' + i + ').html">第' + i + '关</a>';
                 }
+            } else {
+                alert("注册码无效，请联系作者获取有效注册码。作者联系方式：13787746436（微信同号）");
             }
         }
-
-        function openLevel(level) {
-            alert('欢迎进入第' + level + '关！');
-            // 这里可以添加实际的关卡页面跳转逻辑
-        }
     </script>
-
-    <table>
-        <tr>
-            <td><a href="javascript:void(0);" onclick="checkRegCodeAndAccess(1);">第1关</a></td>
-            <td><a href="javascript:void(0);" onclick="checkRegCodeAndAccess(101);">第101关</a></td>
-            <td><a href="javascript:void(0);" onclick="checkRegCodeAndAccess(247);">第247关</a></td>
-        </tr>
-    </table>
 </body>
 </html>
