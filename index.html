@@ -20,7 +20,7 @@
                     document.write('<tr>');
                     for(var j = 0; j < 5; j++, level++) {
                         if (level <= 247) {
-                            let link = level <= 100 ? '<a href="三千 (' + level + ').html">第' + level + '关</a>' : '<a href="#" onclick="showRegistrationPrompt()">请输入注册码</a>';
+                            let link = '<a href="三千 (' + level + ').html">第' + level + '关</a>';
                             document.write('<td>' + link + '</td>');
                         } else {
                             document.write('<td>&nbsp;</td>');
@@ -47,6 +47,9 @@
                 alert("注册码无效，请联系作者获取有效注册码。作者联系方式：13787746436（微信同号）");
             }
         }
+
+        // 给第50关的链接添加点击事件
+        document.querySelector("table").rows[0].cells[4].onclick = showRegistrationPrompt;
     </script>
 </body>
 </html>
