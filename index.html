@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>高考英语新课标3000词汇连连看</title>
+        <style>
+            body { text-align: center; font-family: Arial, sans-serif; }
+            h1 { margin-bottom: 40px; }
+            td { padding: 5px; border: 1px solid #000; }
+            table { margin: 0 auto; border-collapse: collapse; }
+            footer { position: fixed; left: 0; bottom: 0; width: 100%; background-color: #f8f9fa; text-align: center; }
+        </style>
+    </head>
+    <body>
+        <h1>高考英语新课标3000词汇连连看</h1>
+        <table>
+            <tbody>
+                <script>
+                    for(var i=0; i<50; i++) {
+                        document.write('<tr>');
+                        for(var j=0; j<5; j++) {
+                            var level = i + j*50 + 1;
+                            if(level <= 247) {
+                                document.write('<td><a href="3000-' + level + '.html">第' + level + '关</a></td>');
+                            } else {
+                                document.write('<td>&nbsp;</td>'); 
+                            }
+                        }
+                        document.write('</tr>');
+                    }
+                </script>
+            </tbody>
+        </table>
+        <footer>临武一中李国保|熊猫李English工作室</footer>
+    </body>
+</html>
