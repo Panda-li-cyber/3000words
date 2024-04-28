@@ -15,11 +15,13 @@
     <table>
         <tbody>
             <script>
-                let level = 1;
-                for(var i = 0; i < 50; i++) {
+                let levels = 247;
+                let validCode = 'UNIQUE_CODE';  // Replace 'UNIQUE_CODE' with the actual code
+                for (let i = 0; i < 50; i++) {
                     document.write('<tr>');
-                    for(var j = 0; j < 5; j++, level++) {
-                        if (level <= 247) {
+                    for (let j = 0; j < 5; j++) {
+                        let level = i * 5 + j + 1;
+                        if (level <= levels) {
                             let link = '<a href="三千 (' + level + ').html">第' + level + '关</a>';
                             document.write('<td>' + link + '</td>');
                         } else {
@@ -35,21 +37,20 @@
 
     <script>
         function showRegistrationPrompt() {
-            var registrationCode = prompt("请输入作者提供的注册码:");
-            // 这里模拟验证注册码，实际情况需要连接到服务器验证
-            if (registrationCode === "your_registration_code") {
+            var registrationCode = prompt("请输入作者提供的注册码，联系13787746436（微信同号）:");
+            if (registrationCode === validCode) {
                 alert("注册码验证通过，后续关卡已解锁！");
-                // 修改后续关卡链接为可访问状态
-                for(var i = 51; i <= 247; i++) {
-                    document.querySelector("table").rows[Math.floor((i-1) / 5)].cells[(i-1) % 5].innerHTML = '<a href="三千 (' + i + ').html">第' + i + '关</a>';
+                for (let i = 50; i < levels; i++) {
+                    let row = Math.floor(i / 5);
+                    let col = i % 5;
+                    document.querySelector("table").rows[row].cells[col].innerHTML = '<a href="三千 (' + (i + 1) + ').html">第' + (i + 1) + '关</a>';
                 }
             } else {
                 alert("注册码无效，请联系作者获取有效注册码。作者联系方式：13787746436（微信同号）");
             }
         }
 
-        // 给第51关的链接添加点击事件
-        document.querySelector("table").rows[1].cells[0].onclick = showRegistrationPrompt;
+        document.querySelector("table").rows[10].cells[0].onclick = showRegistrationPrompt; // Binding event to level 51 link
     </script>
 </body>
 </html>
