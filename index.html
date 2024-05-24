@@ -8,22 +8,99 @@
         td { padding: 5px; border: 1px solid #000; }
         table { margin: 0 auto; border-collapse: collapse; }
         footer { position: fixed; left: 0; bottom: 0; width: 100%; background-color: #f8f9fa; text-align: center; }
+        a.inactive { color: #000; text-decoration: none; pointer-events: none; }
+        a.active { color: blue; text-decoration: underline; pointer-events: auto; }
     </style>
 </head>
 <body>
     <h1>高考英语新课标3000词汇连连看</h1>
+    <div>
+        <label for="registrationCode">请输入注册码:</label>
+        <input type="text" id="registrationCode" required>
+        <button onclick="validateRegistration()">验证</button>
+    </div>
     <table>
         <tbody>
             <script>
                 let levels = 247;
-                let validCode = 'UNIQUE_CODE';  // Replace 'UNIQUE_CODE' with the actual code
-                for (let i = 0; i < 50; i++) {
+                let validCodes = [
+                    "ABC12345", "TLQ91234", "GHA73905", "JYB30514", "QRZ86247", "CDE27493", "BIR01572", "UNX64058", "WMK38127", "DVE53901",
+                    "JFI28107", "ZKH50734", "SMT48012", "XPB92075", "QYD57104", "VJW83017", "BRZ54189", "WMO73125", "GKX28036", "HDJ67014",
+                    "ZKH70123", "YPF39147", "NTG28056", "LWO49012", "HPM74230", "SXD34905", "VYQ17604", "BMC58209", "GJK48127", "QZN31085",
+                    "RTF67019", "UXV54268", "NWL30197", "HBP87034", "ZRT51846", "FPL93027", "KEM54019", "CJT87235", "VXW67103", "BYO21049",
+                    "LNX50937", "HSF74802", "MDQ64081", "WKR38160", "XPY74018", "TJU29347", "ZOK85029", "QLG57124", "DJH43085", "FMX60972",
+                    "BRL12045", "HQC84739", "WUP93058", "XZM48160", "TYJ70249", "VGF31608", "LCO47293", "HSJ53017", "MNP78120", "FQX69104",
+                    "KDE58219", "CWR41058", "VZJ84361", "BPY27049", "LHK95127", "HXF39208", "MBG47025", "XUR73951", "TGJ28046", "WKP84037",
+                    "QZB61029", "DRF84273", "FJK19058", "KXM47210", "CZL75139", "VMY13057", "BNP64092", "HRX32014", "WLK81027", "YQJ43065",
+                    "SMH89012", "TGK47219", "VZC83047", "BKM61058", "LCJ82034", "HYP47205", "MNQ37091", "XYF56123", "TJL68045", "QZD19307",
+                    "DSK47218", "FPL38057", "KYJ67104", "CXM59138", "VZR30197", "BPO34065", "LNM47102", "HQR83046", "WRX69102", "YQG23014",
+                    "STJ49018", "TKL81073", "VYX34058", "BCM67019", "LXR28147", "HSP73016", "MPQ47025", "XQJ81047", "TJM36081", "QZG49102",
+                    "DRH57019", "FKX84027", "KPL30167", "CMJ73148", "VZG47015", "BQS28097", "LYN47203", "HSP65047", "WQL38125", "YRM47290",
+                    "SZJ78125", "TJN83024", "VZT49051", "BCR59027", "LKQ78103", "HTJ94016", "MNP63147", "XWF47289", "TJH28147", "QZF37095",
+                    "DGL58072", "FJM71024", "KXM48160", "CZQ47219", "VZP63048", "BPC28059", "LKR47205", "HNW68102", "WQL47025", "YQH37102",
+                    "SZL80157", "TJF84027", "VZW52018", "BRQ49016", "LJX84017", "HPT73148", "MRQ47105", "XQH74128", "TJH37149", "QZF68102",
+                    "DRG81029", "FLM93104", "KYQ37219", "CWJ67015", "VZN28065", "BPK47108", "LXR38027", "HSQ64027", "WQP38107", "YQR37082",
+                    "SGM94013", "TJK56129", "VZW37149", "BCR27103", "LHQ28047", "HRJ84012", "MNQ47210", "XQF83108", "TJP49127", "QZK84029",
+                    "DGL38129", "FJR72047", "KYH63129", "CXF78102", "VZT30168", "BPN49051", "LJR47128", "HTF73018", "WQR47025", "YQS37102",
+                    "SJL80157", "TJN84027", "VZK37018", "BRP49102", "LHX82014", "HRQ73148", "MRJ47105", "XQJ64128", "TJH29149", "QZF68102",
+                    "DRG71029", "FLM62104", "KYN48219", "CWQ37015", "VZN28065", "BPL37108", "LXR47027", "HSP65047", "WQP38107", "YQR37082",
+                    "SGL94013", "TJK56129", "VZW47149", "BCR57103", "LHQ28047", "HRJ54012", "MNQ67210", "XQF73108", "TJP59127", "QZK54029",
+                    "DGL48129", "FJR62047", "KYH63129", "CXF78102", "VZT40168", "BPN59051", "LJR57128", "HTF63018", "WQR57025", "YQS47102",
+                    "SJL70157", "TJN74027", "VZK37018", "BRP59102", "LHX72014", "HRQ63148", "MRJ47105", "XQJ54128", "TJH49149", "QZF58102",
+                    "DRG81029", "FLM93104", "KYN57219", "CWQ47015", "VZN38065", "BPL47108", "LXR58027", "HSP75047", "WQP48107", "YQR47082",
+                    "SGL64013", "TJK66129", "VZW57149", "BCR37103", "LHQ48047", "HRJ34012", "MNQ47210", "XQF63108", "TJP49127", "QZK74029",
+                    "DGL58129", "FJR72047", "KYH53129", "CXF78102", "VZT50168", "BPN49051", "LJR47128", "HTF73018", "WQR47025", "YQS37102",
+                    "SJL80157", "TJN84027", "VZK37018", "BRP49102", "LHX82014", "HRQ73148", "MRJ47105", "XQJ64128", "TJH29149", "QZF68102",
+                    "DRG71029", "FLM62104", "KYN48219", "CWQ37015", "VZN28065", "BPL37108", "LXR47027", "HSP65047", "WQP38107", "YQR37082",
+                    "SGL94013", "TJK56129", "VZW47149", "BCR57103", "LHQ28047", "HRJ54012", "MNQ67210", "XQF73108", "TJP59127", "QZK54029",
+                    "DGL48129", "FJR62047", "KYH63129", "CXF78102", "VZT40168", "BPN59051", "LJR57128", "HTF63018", "WQR57025", "YQS47102",
+                    "SJL70157", "TJN74027", "VZK37018", "BRP59102", "LHX72014", "HRQ63148", "MRJ47105", "XQJ54128", "TJH49149", "QZF58102",
+                    "DRG81029", "FLM93104", "KYN57219", "CWQ47015", "VZN38065", "BPL47108", "LXR58027", "HSP75047", "WQP48107", "YQR47082",
+                    "SGL64013", "TJK66129", "VZW57149", "BCR37103", "LHQ48047", "HRJ34012", "MNQ47210", "XQF63108", "TJP49127", "QZK74029",
+                    "DGL58129", "FJR72047", "KYH53129", "CXF78102", "VZT50168", "BPN49051", "LJR47128", "HTF73018", "WQR47025", "YQS37102",
+                    "SJL80157", "TJN84027", "VZK37018", "BRP49102", "LHX82014", "HRQ73148", "MRJ47105", "XQJ64128", "TJH29149", "QZF68102",
+                    "DRG71029", "FLM62104", "KYN48219", "CWQ37015", "VZN28065", "BPL37108", "LXR47027", "HSP65047", "WQP38107", "YQR37082",
+                    "SGL94013", "TJK56129", "VZW47149", "BCR57103", "LHQ28047", "HRJ54012", "MNQ67210", "XQF73108", "TJP59127", "QZK54029",
+                    "DGL48129", "FJR62047", "KYH63129", "CXF78102", "VZT40168", "BPN59051", "LJR57128", "HTF63018", "WQR57025", "YQS47102",
+                    "SJL70157", "TJN74027", "VZK37018", "BRP59102", "LHX72014", "HRQ63148", "MRJ47105", "XQJ54128", "TJH49149", "QZF58102",
+                    "DRG81029", "FLM93104", "KYN57219", "CWQ47015", "VZN38065", "BPL47108", "LXR58027", "HSP75047", "WQP48107", "YQR47082",
+                    "SGL64013", "TJK66129", "VZW57149", "BCR37103", "LHQ48047", "HRJ34012", "MNQ47210", "XQF63108", "TJP49127", "QZK74029",
+                    "DGL58129", "FJR72047", "KYH53129", "CXF78102", "VZT50168", "BPN49051", "LJR47128", "HTF73018", "WQR47025", "YQS37102",
+                    "SJL80157", "TJN84027", "VZK37018", "BRP49102", "LHX82014", "HRQ73148", "MRJ47105", "XQJ64128", "TJH29149", "QZF68102",
+                    "DRG71029", "FLM62104", "KYN48219", "CWQ37015", "VZN28065", "BPL37108", "LXR47027", "HSP65047", "WQP38107", "YQR37082",
+                    "SGL94013", "TJK56129", "VZW47149", "BCR57103", "LHQ28047", "HRJ54012", "MNQ67210", "XQF73108", "TJP59127", "QZK54029",
+                    "DGL48129", "FJR62047", "KYH63129", "CXF78102", "VZT40168", "BPN59051", "LJR57128", "HTF63018", "WQR57025", "YQS47102",
+                    "SJL70157", "TJN74027", "VZK37018", "BRP59102", "LHX72014", "HRQ63148", "MRJ47105", "XQJ54128", "TJH49149", "QZF58102",
+                    "DRG81029", "FLM93104", "KYN57219", "CWQ47015", "VZN38065", "BPL47108", "LXR58027", "HSP75047", "WQP48107", "YQR47082",
+                    "SGL64013", "TJK66129", "VZW57149", "BCR37103", "LHQ48047", "HRJ34012", "MNQ47210", "XQF63108", "TJP49127", "QZK74029"
+                ];
+
+                function validateRegistration() {
+                    let registrationCode = document.getElementById('registrationCode').value;
+
+                    if (validCodes.includes(registrationCode)) {
+                        alert("验证通过，所有关卡已激活！");
+                        activateLinks();
+                    } else {
+                        alert("注册码无效，请联系作者获取有效注册码。作者联系方式：lgb13787746436（微信同号）");
+                    }
+                }
+
+                function activateLinks() {
+                    let links = document.querySelectorAll("a");
+                    links.forEach(link => {
+                        link.classList.remove("inactive");
+                        link.classList.add("active");
+                    });
+                }
+
+                // 初始生成表格内容
+                for (let i = 0; i < Math.ceil(levels / 5); i++) {
                     document.write('<tr>');
                     for (let j = 0; j < 5; j++) {
                         let level = i * 5 + j + 1;
                         if (level <= levels) {
-                            let link = '<a href="三千 (' + level + ').html">第' + level + '关</a>';
-                            document.write('<td>' + link + '</td>');
+                            document.write('<td><a href="三千 (' + level + ').html" class="inactive">第' + level + '关</a></td>');
                         } else {
                             document.write('<td>&nbsp;</td>');
                         }
@@ -34,23 +111,5 @@
         </tbody>
     </table>
     <footer>临武一中李国保|熊猫李English工作室</footer>
-
-    <script>
-        function showRegistrationPrompt() {
-            var registrationCode = prompt("请输入作者提供的注册码，联系13787746436（微信同号）:");
-            if (registrationCode === validCode) {
-                alert("注册码验证通过，后续关卡已解锁！");
-                for (let i = 50; i < levels; i++) {
-                    let row = Math.floor(i / 5);
-                    let col = i % 5;
-                    document.querySelector("table").rows[row].cells[col].innerHTML = '<a href="三千 (' + (i + 1) + ').html">第' + (i + 1) + '关</a>';
-                }
-            } else {
-                alert("注册码无效，请联系作者获取有效注册码。作者联系方式：13787746436（微信同号）");
-            }
-        }
-
-        document.querySelector("table").rows[10].cells[0].onclick = showRegistrationPrompt; // Binding event to level 51 link
-    </script>
 </body>
 </html>
