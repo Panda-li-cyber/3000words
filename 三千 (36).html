@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3000课标单词连连看</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            margin-top: 20px; 
+            margin-bottom: 40px; 
+        }
+        h1, h2 { 
+            color: #333; 
+        }
+        table { 
+            margin: 20px auto; 
+            border-collapse: separate; 
+            border-spacing: 10px 10px;
+        }
+        td { 
+            border: 1px solid #666; 
+            padding: 10px; 
+            width: 80px; 
+            height: 60px; 
+            cursor: pointer; 
+            font-size: 14px; 
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+        td:active {
+            transform: scale(0.9);
+        }
+        .selected {
+            background-color: green; 
+            color: white; 
+        }
+        .mismatched { 
+            background-color: red; 
+        }
+        .matched {
+            background-color: white; 
+            color: white; 
+            pointer-events: none; 
+        }
+        .english {
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        .chinese {
+            font-family: 'SimSun', '宋体';
+            font-weight: bold;
+        }
+        footer { 
+            position: fixed; 
+            bottom: 0; 
+            width: 100%; 
+            font-size: 12px; 
+            color: #666; 
+            display: flex; 
+            justify-content: center; 
+            padding: 10px 20px; 
+        }
+        #timer {
+            position: fixed;
+            right: 10px;
+            top: 10px;
+            font-size: 16px;
+            background-color: lightgray;
+            padding: 5px;
+        }
+        #gameOver {
+            display: none;
+            font-size: 20px;
+            color: red;
+            position: absolute;
+            width: 100%;
+            top: 50%;
+        }
+    </style>
+</head>
+<body>
+    <h1>3000课标单词连连看</h1>
+    <h2>第 36 关</h2>
+    <button onclick="location.reload();">再玩一次</button>
+    <table id="wordGrid">
+        <!-- 单词表格将在这里生成 -->
+    </table>
+    <div id="gameOver">时间到，游戏结束！</div>
+    <footer>
+        临武一中李国保 | 熊猫李English工作室 <span id="visitCount">访次: 0</span>
+    </footer>
+    <audio id="clickSound" src="click.wav"></audio>
+    <audio id="matchSound" src="match.wav"></audio>
+    <audio id="mismatchSound" src="unmatch.wav"></audio>
+    <div id="timer">01:00</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const levels = [
+                [["building","建筑"],
+["them","他们"],
+["dolphin","海豚"],
+["score","分数"],
+["botanical","植物学的"],
+["frog","青蛙"],
+["interest","兴趣"],
+["forget","忘记"],
+["calendar","日历"],
+["end","结束"],
+
+                ]
+            ];
+            let firstSelected = null;
+            let timerInterval;
+
+            function shuffle(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            function setupGame() {
+                const isMobile = window.matchMedia("(max-width: 600px)").matches;
+                const columns = isMobile ? 2 : 5;  // 在手机上使用2列，在电脑上使用5列
+                const rows = isMobile ? 10 : 4;    // 在手机上使用10行，在电脑上使用4行
+                const words = levels[0];
+                const englishWords = words.map(word => word[0]);
+                const chineseWords = words.map(word => word[1]);
+                const mixedWords = shuffle([...englishWords, ...chineseWords]);
+
+                const table = document.getElementById('wordGrid');
+                table.innerHTML = '';
+                let index = 0;
+                for (let i = 0; i < rows; i++) {
+                    const row = table.insertRow();
+                    for (let j = 0; j < columns; j++) {
+                        if (index >= mixedWords.length) break;  // 防止数组越界
+                        const cell = row.insertCell();
+                        const text = mixedWords[index++];
+                        cell.textContent = text;
+                        cell.className = isNaN(text) ? 'english' : 'chinese';
+                        cell.addEventListener('click', handleCellClick);
+                    }
+                }
+                resetTimer();
+            }
+
+            function handleCellClick(event) {
+                const clickedCell = event.target;
+                if (!firstSelected) {
+                    firstSelected = clickedCell;
+                    clickedCell.classList.add('selected');
+                } else if (firstSelected === clickedCell) {
+                    // 点击了同一个单元格两次，忽略
+                    firstSelected.classList.remove('selected');
+                    firstSelected = null;
+                } else {
+                    checkMatch(clickedCell, firstSelected);
+                    firstSelected = null;
+                }
+            }
+
+            function checkMatch(cell1, cell2) {
+                const isMatch = levels[0].some(pair => 
+                    (pair[0] === cell1.textContent && pair[1] === cell2.textContent) ||
+                    (pair[1] === cell1.textContent && pair[0] === cell2.textContent)
+                );
+                if (isMatch) {
+                    cell1.classList.replace('selected', 'matched');
+                    cell2.classList.replace('selected', 'matched');
+                    cell1.textContent = '';
+                    cell2.textContent = '';
+                    document.getElementById('matchSound').play();
+                } else {
+                    cell1.classList.add('mismatched');
+                    cell2.classList.add('mismatched');
+                    setTimeout(() => {
+                        cell1.classList.remove('selected', 'mismatched');
+                        cell2.classList.remove('selected', 'mismatched');
+                    }, 1000);
+                    document.getElementById('mismatchSound'). play();
+                }
+            }
+
+            function resetTimer() {
+                const timeDisplay = document.getElementById('timer');
+                let duration = 60; // 总时间设为60秒
+                clearInterval(timerInterval);
+                timerInterval = setInterval(function () {
+                    if (duration > 0) {
+                        let minutes = parseInt(duration / 60, 10);
+                        let seconds = parseInt(duration % 60, 10);
+                        minutes = minutes < 10 ? "0" + minutes : minutes;
+                        seconds = seconds < 10 ? "0" + seconds : seconds;
+                        timeDisplay.textContent = minutes + ":" + seconds;
+                        duration--;
+                    } else {
+                        clearInterval(timerInterval);
+                        document.getElementById('gameOver').style.display = 'block';
+                    }
+                }, 1000);
+            }
+
+            setupGame();
+        });
+    </script>
+</body>
+</html>
